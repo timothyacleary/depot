@@ -59,8 +59,9 @@ class ProductTest < ActiveSupport::TestCase
   	bad.each do |name|
   		assert new_product(name).invalid?, "#{name} should be invalid"
   	end
+  end
 
-  	test "product is not valid without a unique title" do
+  test "product is not valid without a unique title" do
   		# create product using values from Ruby record in products.yml
   		product = Product.new(title: products(:ruby).title,
   								description: "yyy",
@@ -70,5 +71,18 @@ class ProductTest < ActiveSupport::TestCase
   		assert product.invalid?
   		# test that the title's error is because of the uniqueness 
   		assert_equal ["has already been taken"], product.errors[:title]
-  	end
+  end
+
+  test "title should be at least 10 characters" do
+  		product = Product.new(description: "yyy",
+  								price: 1,
+  								image_url: "fred.gif")
+  		product.title = "123"
+  		assert product.invalid?
+  		assert_equal ["must have at least 10 characters"], product.errors[:title]
+
+  		product.title = "1234567890"
+  		assert product.valid?
+  end
+
 end
