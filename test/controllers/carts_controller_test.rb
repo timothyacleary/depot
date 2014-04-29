@@ -39,11 +39,20 @@ class CartsControllerTest < ActionController::TestCase
     assert_redirected_to cart_path(assigns(:cart))
   end
 
+  test "should allow line item destroy" do
+    @cart.add_product(products(:ruby).id)
+    get :show, id: @cart
+
+    assert_select 'td', products(:ruby).title
+    assert_select 'form div', 'x'
+  end
+
   test "should destroy cart" do
     assert_difference('Cart.count', -1) do
+      session[:cart_id] = @cart.id
       delete :destroy, id: @cart
     end
 
-    assert_redirected_to carts_path
+    assert_redirected_to store_path
   end
 end
