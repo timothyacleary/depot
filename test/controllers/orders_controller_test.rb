@@ -11,7 +11,20 @@ class OrdersControllerTest < ActionController::TestCase
     assert_not_nil assigns(:orders)
   end
 
+  test "should require items in cart" do
+    get :new
+    assert_redirected_to store_path
+    assert_equal flash[:notice], "Your cart is empty"
+  end
+
   test "should get new" do
+    # set up the cart and line item
+    item = LineItem.new
+    item.build_cart
+    item.product = products(:ruby)
+    item.save!
+    session[:cart_id] = item.cart.id
+    # create new order
     get :new
     assert_response :success
   end
