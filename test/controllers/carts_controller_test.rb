@@ -41,10 +41,18 @@ class CartsControllerTest < ActionController::TestCase
 
   test "should destroy cart" do
     session[:cart_id] = @cart.id
+    # assert_difference('Cart.count', -1) do
+    #   delete :destroy, id: @cart
+    # end
+
     assert_difference('Cart.count', -1) do
-      delete :destroy, id: @cart
+      xhr :delete, :destroy, id: @cart
     end
 
-    assert_redirected_to store_path
+    assert_response :success
+    assert_select_jquery :html, '#cart' do
+      assert_select :hide, '#cart'
+    end
+
   end
 end
