@@ -1,5 +1,6 @@
 class Product < ActiveRecord::Base
 	has_many :line_items
+	has_many :orders, through: :line_items
 
 	# check that no line items contain the product before allowing delete
 	before_destroy :ensure_not_referenced_by_line_item
